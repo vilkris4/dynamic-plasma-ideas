@@ -1,7 +1,7 @@
 # Formulas for Dynamic Plasma
 ## Plasma Base Price
 The plasma base price of a momentum. The minimum "price" of plasma an account block has to pay in order to be eligible for inclusion in a momentum.
-$$p=max\{p_p + {p_p \cdot (B_p - B_t) \over B_{t} \cdot c},p_{min}\}$$
+$$p=max\\{p_p + {p_p \cdot (B_p - B_t) \over B_{t} \cdot c},p_{min}\\}$$
 
 * $p$: The plasma base price of the momentum
 
@@ -9,7 +9,7 @@ $$p=max\{p_p + {p_p \cdot (B_p - B_t) \over B_{t} \cdot c},p_{min}\}$$
 
 * $B_p$: The total base plasma committed to the previous momentum
 
-* $B_t$: The total base plasma target of a momentum. This is the target amount of base plasma to be committed to a momentum (constant: 2,100,000)
+* $B_t$: The total base plasma target of a momentum. This is the target amount of base plasma to be committed to a momentum (constant: 2,100,000 plasma)
 
 * $c$: The plasma base price change denominator (constant: 8)
 
@@ -19,7 +19,7 @@ $$p=max\{p_p + {p_p \cdot (B_p - B_t) \over B_{t} \cdot c},p_{min}\}$$
 ## Rate Controlling PoW Plasma
 ### PoW Difficulty Per Plasma
 The proof-of-work difficulty per plasma of a momentum.
-$$d=max\{d_p + {d_p \cdot (P_p - P_{t}) \over P_{t} \cdot c},d_{min}\}$$
+$$d=max\\{d_p + {d_p \cdot (P_p - P_{t}) \over P_{t} \cdot c},d_{min}\\}$$
 
 * $d$: The difficulty per plasma of the momentum
 
@@ -33,14 +33,14 @@ $$d=max\{d_p + {d_p \cdot (P_p - P_{t}) \over P_{t} \cdot c},d_{min}\}$$
 
 ### Momentum PoW Plasma Target
 The target amount of PoW plasma that should be committed to a momentum.
-$$
+```math
 P_t=\left\{
 \begin{array}{ll}
 U_p \cdot \sigma, &\text{if }B_p \ge B_t \\ 
 U_p, &\text{otherwise}
 \end{array} 
 \right.
-$$
+```
 
 * $P_t$: The momentum PoW plasma target
 
@@ -55,7 +55,7 @@ $$
 ## Rate Controlling Fused Plasma
 ### Account's Available Fused Plasma
 The currently available fused plasma for an account.
-$$F_a=max\{F_t-F_u-F_c,0\}$$
+$$F_a=max\\{F_t-F_u-F_c,0\\}$$
 
 * $F_a$: The account's current available fused plasma
 
@@ -67,14 +67,14 @@ $$F_a=max\{F_t-F_u-F_c,0\}$$
 
 ### Account's Confined Fused Plasma
 The currently confined fused plasma of an account. This is the plasma that has to get recharged before it can be used again.
-$$
+```math
 F_c=\left\{
 \begin{array}{ll}
 max\{F_{cc}-(H_f-H_c)\cdot {F_{cc} / T_c},0\}, &\text{if }T_c>0 \\ 
 0, &\text{otherwise}
 \end{array} 
 \right.
-$$
+```
 
 * $F_c$: The account's confined fused plasma
 
@@ -88,7 +88,7 @@ $$
 
 ### Confirmation Target
 The target amount of confirmations needed to fully recharge the account's confined fused plasma.
-$$T={F_b \over \gamma \cdot F_t / \omega} + max\{T_c-(H_f - H_c),0\}$$
+$$T={F_b \over \gamma \cdot F_t / \omega} + max\\{T_c-(H_f - H_c),0\\}$$
 
 * $T$: The confirmation target
 
@@ -108,7 +108,7 @@ $$T={F_b \over \gamma \cdot F_t / \omega} + max\{T_c-(H_f - H_c),0\}$$
 
 ### Base Fusion Recharge Rate
 The base fusion recharge rate of a momentum.
-$$
+```math
 \gamma=\left\{
 \begin{array}{ll}
  max\{\gamma_p / \alpha,\gamma_t\}, &\text{if }\gamma_p>\gamma_t \\
@@ -116,7 +116,7 @@ $$
 \gamma_t, &\text{otherwise}
 \end{array} 
 \right.
-$$
+```
 
 * $\gamma$: The base fusion recharge rate of the momentum
 
