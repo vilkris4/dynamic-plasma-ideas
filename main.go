@@ -20,6 +20,8 @@ const (
 
 	PlasmaRechargeRateChangeMultiplier = 2 // Maximum rate at which the plasma recharge rate can change. Decreases at -50%, increases at 100%.
 
+	AccountPlasmaRechargeRateDenominator = 210000
+
 	AccountBlockBasePlasma      = 21000
 	NumFusionUnitsForBasePlasma = 10
 	PlasmaPerFusionUnit         = AccountBlockBasePlasma / NumFusionUnitsForBasePlasma
@@ -79,13 +81,14 @@ func main() {
 	}
 
 	// Attack simulation
-	/*attackerQsr := uint64(1000000)
-	attackTargetQsrCutoff := uint64(50)                // The target QSR amount the attacker wants to cutoff from using the network
-	attackerTxs := attackerQsr / attackTargetQsrCutoff // QSR is split evenly into separate addresses => 1 tx/address
+	attackerQsr := uint64(1000000)
+	attackerQsrPerAddress := uint64(50)                       // The amount of QSR an attacker has in one address
+	attackTargetQsrCutoff := uint64(50)                       // The target QSR amount the attacker wants to cutoff from using the network
+	attackerTxs := int64(attackerQsr / attackTargetQsrCutoff) // QSR is split evenly into separate transactions
 	attackerFilledMomentums := uint64(0)
-	averageRechargeRate := uint64(0)*/
+	averageRechargeRate := uint64(0)
 
-	rounds := 1
+	rounds := 5000
 	for i := 0; i < rounds; i++ {
 		fmt.Println("------------------------------------------------------------------------------------------------")
 		fmt.Println(fmt.Sprintf("Round #%d", i+1))
@@ -111,26 +114,30 @@ func main() {
 		fmt.Println("------------------------------------------------------------------------------------------------")
 
 		// Simulate tx count change
-		txCount := uint64(100)
+		txCount := uint64(200)
 
-		// Simluate attack
-		/*minQsrRequired := (float64(AccountBlockBasePlasma) * float64(newBasePrice) / BasePriceDenominator) / float64(PlasmaPerFusionUnit)
+		// Simulate attack
+		minQsrRequired := (float64(AccountBlockBasePlasma) * float64(newBasePrice) / BasePriceDenominator) / float64(PlasmaPerFusionUnit)
 
 		if minQsrRequired < float64(attackTargetQsrCutoff) {
-			attackerTxs -= txCount
-			averageRechargeRate = averageRechargeRate + newFusionRechargeRate
+			attackerTxs -= int64(txCount)
+			averageRechargeRate = averageRechargeRate + uint64(float64(newFusionRechargeRate)*GetAddressRechargeRateMultiplier(attackerQsrPerAddress*PlasmaPerFusionUnit))
+			fmt.Println("attacker recharge multiplier", GetAddressRechargeRateMultiplier(attackerQsrPerAddress*PlasmaPerFusionUnit))
+			fmt.Println(fmt.Sprintf("attacker recharge rate %d (%.2f QSR/confirmation)", uint64(float64(newFusionRechargeRate)*GetAddressRechargeRateMultiplier(attackerQsrPerAddress*PlasmaPerFusionUnit)), (float64(newFusionRechargeRate) * GetAddressRechargeRateMultiplier(attackerQsrPerAddress*PlasmaPerFusionUnit) / float64(PlasmaPerFusionUnit))))
+
 			attackerFilledMomentums++
 		} else {
 			txCount = uint64(0) // Attacker has cutoff everyone else by raising the base price.
 		}
 		fmt.Println("Attacker TXs left in mempool", attackerTxs)
+		fmt.Println("Attacker overall recharge rate", attackerTxs)
 
-		if attackerTxs <= uint64(0) && minQsrRequired < float64(attackTargetQsrCutoff) {
+		if attackerTxs <= 0 && minQsrRequired < float64(attackTargetQsrCutoff) {
 			fmt.Println("------")
 			fmt.Println("Attack result")
 			fmt.Println("------")
 			rechargeRateInQsr := float64((averageRechargeRate / uint64(attackerFilledMomentums))) / float64(PlasmaPerFusionUnit)
-			momentumsUntilRecharged := float64(attackTargetQsrCutoff) / rechargeRateInQsr
+			momentumsUntilRecharged := float64(attackerQsrPerAddress) / rechargeRateInQsr
 			blockingTime := float64(i*10) / 60
 			attackCooldownTime := momentumsUntilRecharged * 10 / 60
 			fmt.Println(fmt.Sprintf("Average FusionRechargeRate is %d (%.2f QSR/confirmation)", (averageRechargeRate / uint64(attackerFilledMomentums)), rechargeRateInQsr))
@@ -139,7 +146,7 @@ func main() {
 			fmt.Println(fmt.Sprintf("Bandwidth ratio %.2f", blockingTime/attackCooldownTime))
 			fmt.Println("------------------------------------------------------------------------------------------------")
 			break
-		}*/
+		}
 
 		// Simulate changes
 		basePlasma = txCount * AccountBlockBasePlasma
@@ -157,9 +164,13 @@ func main() {
 	}
 }
 
+func GetAddressRechargeRateMultiplier(addressFusedPlasma uint64) float64 {
+	return float64(addressFusedPlasma) / float64(AccountPlasmaRechargeRateDenominator)
+}
+
 // Get the fused plasma recharge rate target for a given momentum.
 // Recharge rate is dependent on momentum fullness.
-// Get rate multiplier using exponential function => f(x) = 100^-2x
+// Get rate multiplier using exponential function => f(x) = MaxFusionRechargeRate * 100^-2x
 // Assuming MaxRechargeRatePerConfirmation == 210,000 plasma/confirmation:
 // At 0% full => 210,000 plasma/confirmation => 100 QSR/confirmation
 // At 50% full => 2,100 plasma/confirmation => 1 QSR/confirmation

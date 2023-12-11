@@ -1,3 +1,5 @@
+// THIS FILE IS DEPRECATED
+
 // Pseudo code example for calculating available fused plasma
 // for account chain based on dynamic plasma recharge rate.
 
