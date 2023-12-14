@@ -170,14 +170,14 @@ func GetAddressRechargeRateMultiplier(addressFusedPlasma uint64) float64 {
 
 // Get the fused plasma recharge rate target for a given momentum.
 // Recharge rate is dependent on momentum fullness.
-// Get rate multiplier using exponential function => f(x) = MaxFusionRechargeRate * 100^-2x
+// Get rate multiplier using exponential function => f(x) = MaxFusionRechargeRate * 10000^-x
 // Assuming MaxRechargeRatePerConfirmation == 210,000 plasma/confirmation:
 // At 0% full => 210,000 plasma/confirmation => 100 QSR/confirmation
 // At 50% full => 2,100 plasma/confirmation => 1 QSR/confirmation
 // At 100% full => 21 plasma/confirmation => 0.01 QSR/confirmation
 func GetFusionRechargeRateTarget(frontier Momentum) uint64 {
 	fullness := float64(frontier.BasePlasma) / float64(MaxBasePlasmaInMomentum)
-	multiplier := math.Pow(100, -2*fullness)
+	multiplier := math.Pow(10000, -fullness)
 	return uint64(float64(MaxFusionRechargeRate) * multiplier)
 }
 

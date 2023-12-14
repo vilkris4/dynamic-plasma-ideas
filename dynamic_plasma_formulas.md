@@ -128,15 +128,13 @@ The base fusion recharge rate of a momentum.
 
 ### Target Base Fusion Recharge Rate
 The target base fusion recharge rate of a momentum.
-$$\gamma_t=\gamma_{max} \cdot ({\gamma_{max} \over \beta / u})^{-2 \cdot B / B_{max}}$$
+$$\gamma_t=\gamma_{max} \cdot \beta^{-B / B_{max}}$$
 
 * $\gamma_t$: The target base fusion recharge rate of the momentum
 
 * $\gamma_{max}$: The maximum base fusion recharge rate (constant: 210,000 plasma/confirmation)
 
-* $\beta$: Account block base plasma (constant: 21,000 plasma)
-
-* $u$: Fusion units per account block base plasma (constant: 10 QSR)
+* $\beta$: The base of the exponential function (constant: 10,000)
 
 * $B$: The total base plasma committed to the momentum
 
